@@ -6,12 +6,15 @@ docker -v
 # Pull this Docker image with netDx (and all its dependencies) ready to be executed
 # This image weight about 2GB, it may take some time to download
 docker pull giovannics/netdx:latest
-# Start an R session
+# Create a container from the image and enter in the container
+docker run -it giovannics/netdx:latest /bin/bash
+# You have now access to a bash terminal running inside the container.
+# From here you can start an R session
 R
 ````
 The following script is an example of how netDx can be used for build patient similarity networks (PSNs) from transcriptomics and clinical data.   
-Reference: https://www.embopress.org/doi/full/10.15252/msb.20188497
-
+Reference: https://www.embopress.org/doi/full/10.15252/msb.20188497  
+Once the R session has started you can follow the script copying the commands in sequential order.
 ````R
 suppressWarnings(suppressMessages(require(netDx)))
 suppressWarnings(suppressMessages(library(curatedTCGAData)))
