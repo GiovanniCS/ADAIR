@@ -7,9 +7,13 @@ docker -v
 # Pull this Docker image with netDx (and all its dependencies) ready to be executed
 # This image weight about 2GB, it may take some time to download
 docker pull giovannics/netdx:latest
-# Create a container from the image and enter in the container
-docker run -it giovannics/netdx:latest /bin/bash
+# Create a volume to allow data persistance inside the container
+docker volume create --name netdx_volume
+# Create a container combining both image and volume and enter in the container
+docker run -it -v netdx_volume:/home giovannics/netdx:latest /bin/bash
 # You have now access to a bash terminal running inside the container.
+# Since only the /home directory have data persistence let's move to that point in the file system.
+cd /home
 # From here you can start an R session
 R
 ````
@@ -127,4 +131,15 @@ for (k in 1:numSplits) {
        featScores[[cur]][[sprintf("Split%i",k)]] <- tmp
     }
 }
+````
+
+````bash
+# If you want to pull some data from the container to the host machine first get the container id:
+docker ps 
+# then copy the data
+docker cp container_id:/path/to/data .
+# Once you have finished, close the R session:
+quit()
+# And exit from the container:
+exit
 ````
