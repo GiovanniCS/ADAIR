@@ -1,6 +1,7 @@
 # Workflow for setup and execution of netDx R package
 
 ````bash
+# Open a bash terminal and follow the instructions below.
 # Check if Docker is installed in your system, otherwise go to https://docs.docker.com/get-docker/
 docker -v
 # Pull this Docker image with netDx (and all its dependencies) ready to be executed
