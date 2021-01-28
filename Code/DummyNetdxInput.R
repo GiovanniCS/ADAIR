@@ -1,4 +1,5 @@
-library(MultiAssayExperiment)
+suppressWarnings(suppressMessages(require(netDx)))
+#library(MultiAssayExperiment)
 
 # load metabolites names we have received from Rotterdam
 script.directory <- dirname(rstudioapi::getActiveDocumentContext()$path)
@@ -43,10 +44,11 @@ rownames(Rotterdam.metabolites) <- sample(as.character(c(10000:20000)),4002)
 # adapt to netDX input requirements
 Rotterdam.metabolites <- t(Rotterdam.metabolites)
 
-exp = list(metabolites = Rotterdam.metabolites)
+se <- SummarizedExperiment(assays=list(metabolites = Rotterdam.metabolites))
+exp <- list(metabolites = se)
 #IMPORTANT: dummy dataset don't have case/control label
 patient.data <- data.frame(ID=colnames(Rotterdam.metabolites),STATUS=sample(c("case","control"),4002,replace = TRUE))
-rownames(patient.data) = patient.data$ID
+rownames(patient.data) <- patient.data$ID
 Rotterdam.metabolites <- MultiAssayExperiment(experiments=exp,colData = patient.data)
 
 # save dataset (e.g. to import into a docker container)
@@ -55,13 +57,10 @@ save(Rotterdam.metabolites,file="Rotterdam.metabolites.Rdata")
 
 # INSIDE NETDX ENVIRONMENT ...
 groupList <- list()
-metab.groups <- list(rownames(Rotterdam.metabolites))
-names(metab.groups[[1]]) <- rownames(Rotterdam.metabolites)
-groupList[["Metabolites"]] <- metab.groups[[1]]
+metab.groups <- as.list(rownames(Rotterdam.metabolites[[1]]))
+names(metab.groups) <- rownames(Rotterdam.metabolites[[1]])
+groupList[["Metabolites"]] <- metab.groups
 
 outDir <- paste(tempdir(),randAlphanumString(), "pred_output",sep=getFileSep())
 system(paste("mkdir -p ",outDir,sep=""))
-netList <- makePSN_NamedMatrix(Rotterdam.metabolites,rownames(Rotterdam.metabolites),groupList[["Metabolites"]],outDir,verbose=FALSE,writeProfiles=TRUE)
-# Pearson similarity chosen - enforcing min. 5 patients per net.
-# Error in { : task 1 failed - "'match' requires vector arguments"
-
+netList <- makePSN_NamedMatrix(Rotterdam.metabolites[[1]],rownames(Rotterdam.metabolites[[1]]),groupList[["Metabolites"]],outDir,verbose=FALSE,writeProfiles=TRUE)
