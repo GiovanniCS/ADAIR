@@ -71,6 +71,7 @@ metab.matrix
 library(vcfR)
 library(biomaRt)
 library(KEGGREST)
+library(tidyverse)
 
 mart <- useMart("ensembl")
 mart <- useDataset("hsapiens_gene_ensembl", mart)
@@ -92,8 +93,7 @@ names(snps.pathways) = hsa$pathway
 
 if(filter.out.genes.not.in.pathway){
   genes.names <- genes.names[genes.names$entrezgene_id %in% unlist(hsa_path_eg$genes),]
-}
-else {
+}else {
   genes.without.pathway <- genes.names[!(genes.names$entrezgene_id %in% unlist(hsa_path_eg$genes)),]
   snps.pathways$`path::none` = as.character(genes.without.pathway$entrezgene_id)
 }
