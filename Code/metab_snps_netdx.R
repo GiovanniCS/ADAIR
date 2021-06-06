@@ -107,11 +107,11 @@ system(paste("vcftools --gzvcf All.vcf.gz",
   " --from-bp 1 --to-bp 1 --chr 1 --recode --out SampleIDs",
   sep="")
 )
-vcf <- read.vcfR("sampleIDs.recode.vcf", verbose = FALSE )
+vcf <- read.vcfR("SampleIDs.recode.vcf", verbose = FALSE )
 samples = colnames(vcf@gt)[-1]
 samples = samples[1:samples.to.keep]
 write.table(samples,file="names.txt",sep="\n",quote = FALSE,col.names=FALSE,row.names=FALSE)
-system("vcftools --gzvcf ALL.vcf.gz --keep names.txt --recode --out filtered_vcf")
+system("vcftools --gzvcf All.vcf.gz --keep names.txt --recode --out filtered_vcf")
 
 cat("Sample ids retrived and vcf filtered\n")
 
